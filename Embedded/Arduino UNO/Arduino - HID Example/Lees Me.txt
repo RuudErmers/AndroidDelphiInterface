@@ -1,0 +1,84 @@
+Inleiding
+=========
+
+Deze directory bevat de code voor een ARDUINO HID Client die kan
+communiceren met de BatHidBridge. De Arduino is HID Client en de Android is 
+HID Host (ondersteund vanaf Android 4.0).
+
+Globaal
+=======
+
+De implentatie op de Arduino bestaat uit twee delen:
+Firmware voor de USB controller AtMega16U2
+Sketch voor de Arduino Controller ATmega328.
+
+De Sketch implementeert een eenvoudig programmaatje dat een aantal commando's 
+verstuurd (naar zijn Serial port). 
+De Firmware meldt zich aan als HID device en vangt de data van de Sketch op
+en stuurt deze door naar de host. Net zo wordt informatie van de host doorgestuurd naar de Sketch.
+
+Hardware Setup
+==============
+
+De Harware Setup bestaat uit een Arduino Uno REV3.
+Om de firmware en sketches te programmeren hangt deze aan de PC.
+Om te testen hangt deze als HID Client aan een Android 4.0 Tablet.
+
+Software Setup
+==============
+
+Om sketches te programmeren wordt ARDUINO 1.0.2 - 2012.11.05 gebruikt. Er is een directory C:\Arduino met C:\Arduino\Arduino.exe
+Om Firmware te compileren wordt WinAVR-20100110 gebruikt
+Om Firmware te flashen wordt Flip 3.4.7 gebruikt
+Om Firmware te maken is LUFA-120730 gedownload, er is een directory C:\arduino\LUFA-120730
+
+De software op de Android hoeft NIET aangepast te worden, omdat de Arduino zich hetzelfde gedraagt als eerdere HID implementaties
+(VID=$601, PID=$1)
+
+Firmware switch
+===============
+
+1. Om de Sketch te uploaden is als bootloader nodig:
+   C:\arduino\hardware\arduino\firmwares\atmegaxxu2\arduino-usbserial\Arduino-usbserial-atmega16u2-Uno-Rev3.hex
+   (Deze is ook toegevoegd als 'CorrectUsbToSerial.hex')
+
+2. Om het device als HID te laten functioneren dient de betreffende hex file als bootloader geflashed te worden.
+   (Deze is ook toegevoegd als 'GenericHID.hex')
+
+Software
+========
+
+De Sketch software staat in de directory Android.
+De Firmware staat in de directory Firmware. Het is een gewijzigde versie van 
+  C:\arduino\LUFA-120730\Demos\Device\LowLevel\GenericHID
+Om de software te compileren dient deze op die plek in de LUFA boom te staan. 
+Compileren gaat vanuit 'programmers notepad'  door de makefile te openen en de menu optie 'make all' te kiezen
+
+Werking Firmware
+================
+
+De Firmware kijkt naar interrupts op de interne seriele lijn. Omdat de sketch data verstuurd, afsluitend met
+twee bytes 13,10 wordt data gebufferd totdat deze bytes arriveren. De bytes worden dan in de USARTtoUSB_Buffer
+buffer geschreven.
+De USB_Task die herhaaldelijk wordt aangeroepen kijkt of er data in USARTtoUSB_Buffer zit. Zoja, wordt deze
+uitgelezen en verstuurd. De Data wordt afgesloten met een 0 karakter. De Android applicatie verwacht dat.
+>> Het is natuurlijk mogelijk de protocollen aan te passen. Bedenk echter goed dat de data soms in stukjes binnenkomt
+   en dat de Android applicatie momenteel verwacht dat de data als 1 chunk arriveert. Ook dat moet dan aangepast worden.
+
+Indien er data van de Host naar Device verstuurd wordt, wordt in de HIDTask die data gebufferd in USBToUSART_Buffer.
+In de Other_Tasks wordt gekeken of er data is en indien dat zo is wordt data verstuurd naar de intern Serial port.
+
+> Er wordt gebruik gemaakt van twwe ringbuffers om de asynchrone verwerking mogelijk te maken
+> De maximale waarde voor de HID buffergrootte is ongeveer 50 omdat anders het data segment van de processor
+  overloopt. Ik heb hier verder niet naar gekeken, omdat 50 een goede waarde is.
+   
+Conclusies
+==========
+
+De Arduino is ONGESCHIKT voor deze applicatie. Er moet teveel werk verricht worden om het goed te krijgen,
+met alle risicos. ook de werking via twee processoren is ongewenst.
+Ook de ATMEL omgeving is wederom een draak gebleken, zo is de LUFA omgeving veel te complex met allerlei ifdef's en 
+aparte directories. Voordat het werkt ben je weer veel tijd kwijt (itt. bv. de MBed omgeving).
+
+
+

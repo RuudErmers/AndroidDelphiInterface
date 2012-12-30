@@ -1,0 +1,60 @@
+﻿	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+		<PropertyGroup>
+			<ProjectGuid>{BBEB533D-9487-48AD-90F9-7D829866DA7E}</ProjectGuid>
+		</PropertyGroup>
+		<ItemGroup>
+			<Projects Include="AdbLibusb\AndroidAdb.dproj">
+				<Dependencies/>
+			</Projects>
+			<Projects Include="AoALibUsb\AndroidOA.dproj">
+				<Dependencies/>
+			</Projects>
+			<Projects Include="HidLibUsb\HidLibUsb.dproj">
+				<Dependencies/>
+			</Projects>
+		</ItemGroup>
+		<ProjectExtensions>
+			<Borland.Personality>Default.Personality.12</Borland.Personality>
+			<Borland.ProjectType/>
+			<BorlandProject>
+				<Default.Personality/>
+			</BorlandProject>
+		</ProjectExtensions>
+		<Target Name="AndroidAdb">
+			<MSBuild Projects="AdbLibusb\AndroidAdb.dproj"/>
+		</Target>
+		<Target Name="AndroidAdb:Clean">
+			<MSBuild Targets="Clean" Projects="AdbLibusb\AndroidAdb.dproj"/>
+		</Target>
+		<Target Name="AndroidAdb:Make">
+			<MSBuild Targets="Make" Projects="AdbLibusb\AndroidAdb.dproj"/>
+		</Target>
+		<Target Name="AndroidOA">
+			<MSBuild Projects="AoALibUsb\AndroidOA.dproj"/>
+		</Target>
+		<Target Name="AndroidOA:Clean">
+			<MSBuild Targets="Clean" Projects="AoALibUsb\AndroidOA.dproj"/>
+		</Target>
+		<Target Name="AndroidOA:Make">
+			<MSBuild Targets="Make" Projects="AoALibUsb\AndroidOA.dproj"/>
+		</Target>
+		<Target Name="HidLibUsb">
+			<MSBuild Projects="HidLibUsb\HidLibUsb.dproj"/>
+		</Target>
+		<Target Name="HidLibUsb:Clean">
+			<MSBuild Targets="Clean" Projects="HidLibUsb\HidLibUsb.dproj"/>
+		</Target>
+		<Target Name="HidLibUsb:Make">
+			<MSBuild Targets="Make" Projects="HidLibUsb\HidLibUsb.dproj"/>
+		</Target>
+		<Target Name="Build">
+			<CallTarget Targets="AndroidAdb;AndroidOA;HidLibUsb"/>
+		</Target>
+		<Target Name="Clean">
+			<CallTarget Targets="AndroidAdb:Clean;AndroidOA:Clean;HidLibUsb:Clean"/>
+		</Target>
+		<Target Name="Make">
+			<CallTarget Targets="AndroidAdb:Make;AndroidOA:Make;HidLibUsb:Make"/>
+		</Target>
+		<Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+	</Project>

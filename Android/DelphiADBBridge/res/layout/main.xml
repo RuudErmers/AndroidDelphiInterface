@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#004E98"
+    android:orientation="vertical">   
+  	<TextView style="?android:attr/textAppearanceSmall"
+            android:id="@+id/adb_debug"
+			android:layout_width="fill_parent" 
+			android:layout_height="wrap_content"
+			android:text="Debug:\n" />
+    <TextView style="?android:attr/textAppearanceSmall"
+            android:id="@+id/adb_receive"
+			android:layout_width="fill_parent"
+			android:background="#002298" 
+			android:layout_height="wrap_content"
+			android:text="Receive:\n" /> 
+</LinearLayout>
